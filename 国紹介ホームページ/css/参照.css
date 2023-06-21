@@ -1,0 +1,26 @@
+
+  body {
+    margin: 0
+  }
+  #container {
+    width: 100vw;
+    margin: 0px auto;
+    padding: 8px;
+    background: rgb(0, 0, 0);
+    opacity: 0.6;
+    position: fixed;
+    
+    }
+    header {
+      height:50px;
+      margin-top: 0;
+    }
+    #size{
+      font-size: 20px;
+    }
+    #size2{
+      font-size: 13px;
+    }
+    .disc li{
+      display: inline-block;
+  }

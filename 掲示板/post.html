@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コメント入力</title>
+    <link rel="stylesheet" href="css/cc.css">
+</head>
+<body>
+    
+    <header>
+    
+
+
+        <div class="disc">
+                    <ol>
+                    
+                    <li><div id="size" style="text-align: left;"><font color="black">NNN掲示板</font>
+                        　　　　　　　　　　　　　　　　　　　
+                    </div></li>
+                    <li><div id="size2" style="text-align:right"><a href="post.html"><font color="black">&nbsp;投稿</font></a></div></li>　&nbsp;
+                    <li><div id="size2" style="text-align:right"><a href="BBSServlet"><font color="black">掲示板の表示</font></a></div></li>　&nbsp;
+                    <li><div id="size2" style="text-align:right"> <a href="delete.html"><font color="black">コメントの削除</font></a></div></li>
+                    
+                    
+                    </ol>
+                </div>
+                
+            
+            <hr color="red">
+            </header>  
+        <br>
+        <br>
+    <form method="Post" action="post" class="example">
+        <h1>コメントを入力</h1>
+    名前 : <input type="text" name="data" value="名無しさん"><br>
+    コメント :<br>
+    <textarea name="neko" rows="10" cols="50"></textarea><br>
+    <button type="submit" class="button">送信</button>
+    
+    <a href="index.html">topに戻る</a>
+    </form>
+
+    <style>
+        .button{
+            display: block;
+            margin: auto;
+        }
+        
+        </style>
+</body>
+</html>

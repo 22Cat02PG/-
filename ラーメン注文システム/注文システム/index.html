@@ -1,0 +1,280 @@
+
+<html>
+    <head>
+      <title>Order Confirmation</title>
+    </head>
+    <body>
+      <html>
+        <head>
+          <title>ラーメン注文システム</title>
+          <style type="text/css">
+            body {
+              font-family: sans-serif;
+            }
+        
+            table {
+              border-collapse: collapse;
+            }
+        
+            table, th, td {
+              border: 1px solid #ccc;
+            }
+        
+            th {
+              background-color: #eee;
+            }
+        
+            .order-btn {
+              background-color: #0099ff;
+              color:            #fff;
+              padding:          5px 10px;
+              border-radius:    5px;
+              display:          block;
+              margin:           auto;
+            }
+        
+            .order-btn:hover {
+              background-color: #0066cc;
+            }
+            .example{
+              width: fit-content;
+              margin: auto;
+              border: 1px solid #333;
+              background:       #e3f5ff;
+            }
+            body {
+              background: url("images/店内.jpg") repeat;
+              background-size:cover;
+              margin: 0
+            }
+          
+          </style>
+        </head>
+        <body>
+          <!--文字に色付き枠線を付けfontcollarを変更-->
+          <div style="text-align:center;"><h1 style="color:green;
+            text-shadow:
+            -1px -1px 0 white,
+            1px -1px 0 white,
+            -1px 1px 0 white,
+            1px 1px 0 white;">ラーメン注文システム</h1></div>
+          <form name="orderForm" class="example">
+            <table style="text-align:center;">
+              <tr>
+                
+                <th>商品画像</th>
+                <th>商品名</th>
+                <th>単価</th>
+                <th>注文個数</th>
+              </tr>
+              <tr>
+              
+                <td><img src="images/醤油.jpg" width="100"></td>
+                <td>醬油ラーメン</td>
+                <td>900円</td>
+                <td><input type="number" min="0" id="textForm1" name="num1" size="3" value="0"></td>
+              </tr>
+              <tr>
+                
+                <td><img src="images/豚骨.jpg" width="100"></td>
+                <td>豚骨ラーメン</td>
+                <td>1000円</td>
+                <td><input type="number" min="0" id="textForm2" name="num2" size="3" value="0"></td>
+              </tr>
+              <tr>
+                
+                <td><img src="images/味噌.jpg" width="100"></td>
+                <td>味噌ラーメン</td>
+                <td>850円</td>
+                <td><input type="number" min="0" id="textForm3" name="num3" size="3" value="0"></td>
+              </tr>
+              <tr>
+                
+                <td><img src="images/塩.jpg" width="100"></td>
+                <td>塩ラーメン</td>
+                <td>900円</td>
+                <td><input type="number" min="0" id="textForm4" name="num4" size="3" value="0"></td>
+              </tr>
+              <tr>
+                
+                <td><img src="images/タニシ.jpg" width="100"></td>
+                <td>タニシの味噌ラーメン</td>
+                <td>1050円</td>
+                <td><input type="number" min="0" id="textForm5" name="num5" size="3" value="0"></td>
+              </tr>
+            </table>
+            
+          
+    <form name="orderForm">
+      
+      <input type="button" id="order-btn" value="注文する" class="order-btn" onclick="order()">
+      <div id="order-table"></div> <!--id order-tableをjsp内の注文履歴で使用-->
+    </form>
+          </form>
+      <script>
+    // 注文処理
+    function order(param) {
+           // 注文個数のチェックを行う　numは注文個数を表す
+            var isError = false;
+      for (var i = 1; i <= 5; i++) {
+        var num = document.orderForm['num' + i].value;
+        if (isNaN(num) || num < 0) {
+          alert('注文個数には0以上の整数を入力してください');
+          isError = true;
+          
+        }
+      }
+
+      
+      
+      
+      // 注文個数がすべて0の場合はエラーをアラートで出力
+      if (!isError) {
+        var isAllZero = true;
+        for (var i = 1; i <= 5; i++) {
+          var num = document.orderForm['num' + i].value;
+          if (num > 0) {
+            isAllZero = false;
+          
+          }
+        }
+        if (isAllZero) {
+          alert('注文個数がすべて0です');
+          isError = true;
+        }
+      }
+    
+
+      // 注文処理を実行
+      if (!isError) {
+        // 確認メッセージの表示
+        if (confirm('注文を確定しますか？')) {
+          // 合計金額の表示
+          var totalPrice = 0;
+          for (var i = 1; i <= 5; i++) {
+            var num = document.orderForm['num' + i].value;
+            if (num > 0) {
+              var price1 = 900;
+              var price2 = 1000;
+              var price3 = 850;
+              var price4 = 900;
+              var price5 = 1050;
+              switch (i) {
+                case 1:
+                  totalPrice += num * price1;
+                  break;
+                case 2:
+                  totalPrice += num * price2;
+                  break;
+                case 3:
+                  totalPrice += num * price3;
+                  break;
+                case 4:
+                  totalPrice += num * price4;
+                  break;
+                case 5:
+                  totalPrice += num * price5;
+                  break;
+              }
+            }
+          }
+
+          alert('合計金額は' + totalPrice + '円です。');
+          
+      }
+    }
+    
+    //注文個数が全て0の場合は注文履歴を表示しない
+      if(totalPrice > 0){
+        true;
+      }else if(num == 0){
+        //関数の終了
+        !param;
+        return
+      }
+    
+        //注文履歴の表示(クリック後に表示したい)
+        // document.getElementById('order-btn').addEventListener('click', function() { 下のorder-tableで重複表示になる。二回クリックしないと表示されない
+          // Create table element
+          let table = document.createElement('table');
+          table.setAttribute('border', '1');
+          // Create table header
+          let header = document.createElement('thead');
+          let headerRow = document.createElement('tr');
+          let itemHeader = document.createElement('th');
+          itemHeader.innerHTML = '商品名';
+          let quantityHeader = document.createElement('th');
+          quantityHeader.innerHTML = '醬油ラーメン';
+          let nekoHeader = document.createElement('th');
+          nekoHeader.innerHTML = '豚骨ラーメン';
+          let butaHeader = document.createElement('th');
+          butaHeader.innerHTML = '味噌ラーメン';
+          let sioHeader = document.createElement('th');
+          sioHeader.innerHTML = '塩ラーメン';
+          let tanisiHeader = document.createElement('th');
+          tanisiHeader.innerHTML = 'タニシの味噌ラーメン';
+          let totalHeader = document.createElement('th');
+          totalHeader.innerHTML = '合計金額';
+          headerRow.appendChild(itemHeader);
+          headerRow.appendChild(quantityHeader);
+          headerRow.appendChild(nekoHeader);
+          headerRow.appendChild(butaHeader);
+          headerRow.appendChild(sioHeader);
+          headerRow.appendChild(tanisiHeader);
+          headerRow.appendChild(totalHeader);
+          header.appendChild(headerRow);
+          
+          // Create table body
+          let body = document.createElement('tbody');
+          let itemRow = document.createElement('tr');
+          let itemCell = document.createElement('td');
+          itemCell.innerHTML = '注文個数';
+          let price1Cell = document.createElement('td');
+          var text1 = document.getElementById("textForm1").value;
+          price1Cell.innerHTML = text1;
+          let price2Cell = document.createElement('td');
+          var text2 = document.getElementById("textForm2").value
+          price2Cell.innerHTML = text2;
+          let price3Cell = document.createElement('td');
+          var text3 = document.getElementById("textForm3").value
+          price3Cell.innerHTML = text3;
+          let price4Cell = document.createElement('td');
+          var text4 = document.getElementById("textForm4").value
+          price4Cell.innerHTML = text4;
+          let price5Cell = document.createElement('td');
+          var text5 = document.getElementById("textForm5").value
+          price5Cell.innerHTML = text5;
+          let totalPrice1 = document.createElement('td');
+          if(totalPrice==undefined){
+            totalPrice=0;
+          }else{
+            totalPrice;
+          }
+          totalPrice1.innerHTML = totalPrice;
+          itemRow.appendChild(itemCell);
+          itemRow.appendChild(price1Cell);
+          itemRow.appendChild(price2Cell);
+          itemRow.appendChild(price3Cell);
+          itemRow.appendChild(price4Cell);
+          itemRow.appendChild(price5Cell);
+          itemRow.appendChild(totalPrice1);
+          body.appendChild(itemRow);
+    
+          
+          table.appendChild(header);
+          table.appendChild(body);
+    
+        
+          document.getElementById('order-table').appendChild(table);
+        // },false);
+        // 注文内容のクリア処理
+        for (var i = 1; i <= 5; i++) {
+          document.orderForm['num' + i].value = 0;
+        }
+      
+      }
+      
+
+      </script>
+    </body>
+    </html>

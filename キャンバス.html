@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #F5F5F5;
+}
+
+* {
+  box-sizing: border-box; 
+}
+
+
+#input-area {
+  border: 2px solid;
+  padding: 10px;
+  margin: 10px;
+  float: right;
+  width: 300px; 
+  
+}
+
+#canvas {
+  display: block;
+  margin: auto;
+  border: 1px solid #000;
+}
+
+.top-banner {
+  height: 70px; 
+  width: 100%; 
+  background-color: #004c8c; 
+  position: absolute; 
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+
+.example2 {
+    display: flex;
+    background-color: #cec9c9a2;
+
+}
+
+.example2 button {
+    display: block;
+    width: 120px;
+    background: #00BFFF;
+    color: #FFf;
+    padding: 10px;
+    margin: 5px;
+    box-sizing: border-box;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none; /* ボタンのデフォルトのボーダーを削除 */
+}
+
+.example2 input {
+    display: none;
+}
+.example2 input:checked + label button {
+    background: yellow; 
+    color: #000; 
+}
+
+h2 {
+    text-align: center;
+}
+</style>
+</head>
+<body>
+    <div class="top-banner"><h1>描画アプリケーション</h1></div>
+    <br><br><br><br>
+    <div class="example2">
+        <input type="radio" checked id="11" name="example3">
+        <label for="11"><button onclick="selectMenu(1)" >手描き線の描画</button></label>
+        <input type="radio" id="12" name="example3">
+        <label for="12"><button onclick="selectMenu(2)" >線の描画</button></label>
+        <input type="radio" id="13" name="example3">
+        <label for="13"><button onclick="selectMenu(3)" >円の描画</button></label>
+        <input type="radio" id="14" name="example3">
+        <label for="14"><button onclick="selectMenu(4)" >矩形の描画</button></label>
+        <input type="radio" id="15" name="example3">
+        <label for="15"><button onclick="selectMenu(5)" >画像の貼り付け</button></label>
+        <input type="radio" id="16" name="example3">
+        <label for="16"><button onclick="selectMenu(6)" >線のスタイル変更</button></label>
+        <input type="radio" id="17" name="example3">
+        <label for="17"><button onclick="selectMenu(7)" >塗りつぶしのスタイル変更</button></label>
+        <input type="radio" id="18" name="example3">
+        <label for="18"><button onclick="selectMenu(8)" >画像として保存</button></label>
+        <input type="radio" id="19" name="example3">
+        <button onclick="undo()">⇦</button>
+        <button onclick="redo()">⇨</button>
+        <label for="19"><button onclick="clearCanvas()" >クリア</button></label>
+                                    </div>
+    
+                                    <div id="input-area"><h2  id="myTextarea">パラメータ入力エリア</h2>
+                                        <div onclick="selectMenu(2)"></div>
+                                    <div id="lineMenu" style="display:none;">
+                                        <h2>線の描画</h2>
+                                      始点（x, y）: <br><input type="number" id="startX">, <input type="number" id="startY"><br>
+                                      終点（x, y）: <br><input type="number" id="endX">, <input type="number" id="endY"><br>
+                                      <button onclick="drawLineByCoordinates()">描画する</button>
+                                    </div>
+                                    <div onclick="selectMenu(3)"></div>
+                                    <div id="circleMenu" style="display:none;">
+                                        <h2>円の描画</h2>
+
+                                        中心点（x, y）: <input type="number" id="centerX">, <input type="number" id="centerY"><br>
+                                        半径（r）: <br><input type="number" id="radius"><br>
+                                        <label><input type="radio" name="circleType" value="stroke"> 輪郭を描く</label>
+                                        <label><input type="radio" name="circleType" value="fill"> 塗りつぶしを行う</label><br>
+                                        <button onclick="drawCircleByCoordinates()">描画する</button>
+                                      </div>
+
+                                      <div onclick="selectMenu(4)"></div>
+                                    <div id="rectangleMenu" style="display:none;">
+                                        <h2>矩形の描画</h2>
+
+                                      左上の点（x, y）: <input type="number" id="rectX">, <input type="number" id="rectY"><br>
+                                      幅・高さ（w, h）: <input type="number" id="rectW">, <input type="number" id="rectH"><br>
+                                      <label><input type="radio" name="rectType" value="stroke"> 輪郭を描く</label>
+                                      <label><input type="radio" name="rectType" value="fill"> 塗りつぶしを行う</label><br>
+                                      <button onclick="drawRectByCoordinates()">描画する</button>
+                                    </div>
+
+                                    <div onclick="selectMenu(5)"></div>
+                                    <div id="imagePasteMenu" style="display:none;">
+                                        <h2>画像の貼り付け</h2>
+
+                                      貼り付け画像: <input type="file" id="pasteImage" accept="image/*"><br>
+                                      貼り付け座標（x, y）: <input type="number" id="pasteX">, <input type="number" id="pasteY"><br>
+                                      <button onclick="pasteImage()">貼り付け</button>
+                                    </div>
+                                    
+                                    <div id="lineStyleMenu" style="display: none;">
+                                        <h2>線のスタイル変更</h2>
+
+                                        線の色:
+                                        <br><input type="color" id="lineColor" onchange="changeLineStyle()" value="#000000">
+                                        <br>線の太さ:<br>
+                                        <input type="number" id="lineWidth" onchange="changeLineStyle()" value="1">
+                                        <br>先端の形状: <br>
+                                        <select id="lineCap" onchange="changeLineStyle()">
+                                          <option value="butt">平ら</option>
+                                          <option value="round">丸み</option>
+                                          <option value="square">四角</option>
+                                        </select>
+                                      </div>
+                                      
+                                      <div id="fillStyleMenu" style="display: none;">
+                                        <h2>塗りつぶしのスタイル変更</h2>
+
+                                        塗りつぶしの色: <br>
+                                        <input type="color" id="fillColor" onchange="changeFillStyle()" value="#000000">
+                                      </div>
+                                      
+                                      <div id="saveAsImageMenu" style="display: none;">
+                                        <h2>画像保存</h2>
+
+                                        <label>ファイル名: </label>
+                                        <input type="text" id="filename" value="my_image">
+                                        
+                                        <label>ファイル形式: </label>
+                                        <select id="filetype">
+                                          <option value="png">PNG</option>
+                                          <option value="jpeg">JPEG</option>
+                                          <option value="webp">WEBP</option>
+                                        </select>
+                                        
+                                        <button onclick="saveCanvasAsImage()">保存</button>
+                                      </div>
+                                      
+                                      
+                                      </div>
+                                      <canvas id="canvas" width="800" height="440"></canvas>
+                                      
+                                    
+<script>
+document.querySelector('h1').style.color = '#FFD700';
+let h1Element = document.querySelector('h1');
+h1Element.style.textAlign = 'center';
+
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
+let isDrawing = false;
+let currentCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height); // キャンバスの現在の状態を保存
+let startX, startY;
+let menuNumber = 0;
+let undoStack = []; // アンドゥの履歴を保持
+let redoStack = []; // リドゥの履歴を保持
+
+
+
+// スタート
+canvas.addEventListener('mousedown', (event) => {
+  if (menuNumber === 1) { // 1番のメニューが選択された場合のみ
+    isDrawing = true;
+    ctx.beginPath();
+    ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+  }
+});
+
+// 描画中
+canvas.addEventListener('mousemove', (event) => {
+  if (isDrawing && menuNumber === 1) { // 1番のメニューが選択された場合のみ
+    ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    ctx.stroke();
+  }
+});
+
+// 描画終了
+canvas.addEventListener('mouseup', () => {
+  if (isDrawing && menuNumber === 1) { // 1番のメニューが選択された場合のみ
+    isDrawing = false;
+    ctx.closePath();
+    currentCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height); // 描画終了時に状態を保存
+  }
+});
+
+function redrawCurrentCanvas() {
+  ctx.putImageData(currentCanvas, 0, 0);
+}
+
+
+// スタート（線の描画用）
+canvas.addEventListener('mousedown', (event) => {
+  if (menuNumber === 2) {
+    isDrawing = true;
+    startX = event.clientX - canvas.offsetLeft;
+    startY = event.clientY - canvas.offsetTop;
+  }
+});
+
+// 描画中（線の描画用）
+canvas.addEventListener('mousemove', (event) => {
+  if (isDrawing && menuNumber === 2) {
+    redrawCurrentCanvas();
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    ctx.stroke();
+  }
+});
+
+// 描画終了（線の描画用）
+canvas.addEventListener('mouseup', () => {
+  if (menuNumber === 2) {
+    isDrawing = false;
+    ctx.closePath();
+    currentCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height); // 描画終了時に状態を保存
+  }
+});
+
+// 座標から直線を描画
+function drawLineByCoordinates() {
+  let x1 = document.getElementById('startX').value;
+  let y1 = document.getElementById('startY').value;
+  let x2 = document.getElementById('endX').value;
+  let y2 = document.getElementById('endY').value;
+
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  currentCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height); // 描画終了時に状態を保存
+}
+
+canvas.addEventListener('mouseup', () => {
+    if ((isDrawing && menuNumber === 3) || (isDrawing && menuNumber === 4)) {
+      isDrawing = false;
+      currentCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height); // 描画終了時に状態を保存
+    }
+  });
+
+// スタート（円の描画用）
+canvas.addEventListener('mousedown', (event) => {
+  if (menuNumber === 3) {
+    isDrawing = true;
+    startX = event.clientX - canvas.offsetLeft;
+    startY = event.clientY - canvas.offsetTop;
+  }
+});
+
+// 描画中（円の描画用）
+canvas.addEventListener('mousemove', (event) => {
+  if (isDrawing && menuNumber === 3) {
+    redrawCurrentCanvas();
+    const type = document.querySelector('input[name="circleType"]:checked').value;
+    const radius = Math.sqrt((startX - (event.clientX - canvas.offsetLeft)) ** 2 + (startY - (event.clientY - canvas.offsetTop)) ** 2);
+    ctx.beginPath();
+    ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+    type === 'stroke' ? ctx.stroke() : ctx.fill();
+  }
+});
+
+function selectMenu(number) {
+    
+    menuNumber = number;
+    document.getElementById('lineMenu').style.display = (number === 2) ? 'block' : 'none';
+    document.getElementById('circleMenu').style.display = (number === 3) ? 'block' : 'none';
+    document.getElementById('rectangleMenu').style.display = (number === 4) ? 'block' : 'none';
+    document.getElementById('imagePasteMenu').style.display = (number === 5) ? 'block' : 'none';
+    document.getElementById('lineStyleMenu').style.display = (number === 6) ? 'block' : 'none';
+    document.getElementById('fillStyleMenu').style.display = (number === 7) ? 'block' : 'none';
+    document.getElementById('saveAsImageMenu').style.display = (number === 8) ? 'block' : 'none'; 
+    var buttons = document.querySelectorAll('.example2 button');
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].style.background = '#00BFFF';
+        buttons[i].style.color = '#FFF'; 
+    }
+    buttons[menuNumber - 1].style.background = 'yellow';
+    buttons[menuNumber - 1].style.color = '#000'; 
+
+    var textarea = document.getElementById('myTextarea');
+    if (menuNumber === 1) { // 1番目のボタンが押されたときにテキストエリアを表示
+        textarea.style.display = 'block';
+    } else { // それ以外のボタンが押されたときにテキストエリアを非表示
+        textarea.style.display = 'none';
+    }
+}
+
+// 座標から円を描画
+function drawCircleByCoordinates() {
+  const x = document.getElementById('centerX').value;
+  const y = document.getElementById('centerY').value;
+  const r = document.getElementById('radius').value;
+  const type = document.querySelector('input[name="circleType"]:checked').value;
+
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  type === 'stroke' ? ctx.stroke() : ctx.fill();
+  currentCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height); // 描画終了時に状態を保存
+}
+
+// スタート（矩形の描画用）
+canvas.addEventListener('mousedown', (event) => {
+    if (menuNumber === 4) {
+      isDrawing = true;
+      startX = event.clientX - canvas.offsetLeft;
+      startY = event.clientY - canvas.offsetTop;
+    }
+  });
+
+// 描画中（矩形の描画用）
+canvas.addEventListener('mousemove', (event) => {
+    if (isDrawing && menuNumber === 4) {
+      redrawCurrentCanvas();
+      const type = document.querySelector('input[name="rectType"]:checked').value;
+      const x = startX;
+      const y = startY;
+      const w = event.clientX - canvas.offsetLeft - startX;
+      const h = event.clientY - canvas.offsetTop - startY;
+      type === 'stroke' ? ctx.strokeRect(x, y, w, h) : ctx.fillRect(x, y, w, h);
+    }
+  });
+  
+  
+  // 座標から矩形を描画
+  function drawRectByCoordinates() {
+    const x = document.getElementById('rectX').value;
+    const y = document.getElementById('rectY').value;
+    const w = document.getElementById('rectW').value;
+    const h = document.getElementById('rectH').value;
+    const type = document.querySelector('input[name="rectType"]:checked').value;
+  
+    type === 'stroke' ? ctx.strokeRect(x, y, w, h) : ctx.fillRect(x, y, w, h);
+    currentCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height); // 描画終了時に状態を保存
+  }
+  
+
+  
+  // 画像の貼り付け
+  function pasteImage() {
+    const fileInput = document.getElementById('pasteImage');
+    const x = document.getElementById('pasteX').value;
+    const y = document.getElementById('pasteY').value;
+  
+    const file = fileInput.files[0];
+    if (!file) {
+      alert('画像ファイルを選択してください。');
+      return;
+    }
+  
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const image = new Image();
+      image.onload = () => {
+        ctx.drawImage(image, x, y);
+        currentCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height); 
+      };
+      image.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  
+  
+// 線のスタイル変更
+function changeLineStyle() {
+  const color = document.getElementById('lineColor').value;
+  const width = document.getElementById('lineWidth').value;
+  const cap = document.getElementById('lineCap').value;
+
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineCap = cap;
+}
+
+
+// 塗りつぶしのスタイル変更
+function changeFillStyle() {
+  const color = document.getElementById('fillColor').value;
+  ctx.fillStyle = color;
+}
+
+
+  function saveCanvasAsImage() {
+  const filename = document.getElementById('filename').value;
+  const filetype = document.getElementById('filetype').value;
+  let mimeType;
+
+  switch (filetype) {
+    case 'png':
+      mimeType = 'image/png';
+      break;
+    case 'jpeg':
+      mimeType = 'image/jpeg';
+      break;
+    case 'webp':
+      mimeType = 'image/webp';
+      break;
+    default:
+      alert('Unsupported file type');
+      return;
+  }
+
+  const link = document.createElement('a');
+  link.download = `${filename}.${filetype}`;
+  link.href = canvas.toDataURL(mimeType);
+  link.click();
+}
+// 描画時にundoStackに現在の状態を追加
+function saveState() {
+  undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+  redoStack = []; // 新しい描画をするたびにリドゥの履歴はリセット
+}
+
+canvas.addEventListener('mousedown', () => {
+  saveState();
+});
+
+// アンドゥの機能
+function undo() {
+  if (undoStack.length > 0) {
+    const lastState = undoStack.pop();
+    redoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    ctx.putImageData(lastState, 0, 0);
+  } else {
+    alert("これ以上は戻せません");
+  }
+}
+
+// リドゥの機能
+function redo() {
+  if (redoStack.length > 0) {
+    const lastState = redoStack.pop();
+    undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    ctx.putImageData(lastState, 0, 0);
+  } else {
+    alert("これ以上は復元できません");
+  }
+}
+
+
+  function clearCanvas() {
+    if (window.confirm('キャンバスをクリアしますか？')) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      currentCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height); 
+    }
+  }
+</script>
+</body>
+</html>
